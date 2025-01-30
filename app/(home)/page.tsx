@@ -28,7 +28,8 @@ import { translations } from "../_utils/translations";
 import { GameHistory } from "../_components/GameHistory";
 import { DraftCode } from "../_components/DraftCode";
 import { Winner } from "../_components/Winner";
-import { CopyIcon, EyeIcon, EyeOffIcon } from "lucide-react";
+import { CopyIcon, EyeIcon, EyeOffIcon, Github } from "lucide-react";
+import Link from "next/link";
 
 interface DraftData {
   [key: number]: string;
@@ -234,7 +235,19 @@ const Home = () => {
     return (
       <div className="flex min-h-screen flex-col items-center overflow-y-auto bg-background p-4">
         <div className="w-full max-w-md">
-          <div className="mb-4 flex justify-end">
+          <div className="mb-4 flex items-center justify-end space-x-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() =>
+                navigator.clipboard.writeText(roomName.replace("-", ""))
+              }
+              type="button"
+            >
+              <Link href="https://github.com/souzaneto25/whats-my-code">
+                <Github className="h-4 w-4" />
+              </Link>
+            </Button>
             <Select
               value={language}
               onValueChange={(value) => setLanguage(value as "en" | "pt")}
