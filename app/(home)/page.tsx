@@ -28,6 +28,7 @@ import { translations } from "../_utils/translations";
 import { GameHistory } from "../_components/GameHistory";
 import { DraftCode } from "../_components/DraftCode";
 import { Winner } from "../_components/Winner";
+import { CopyIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 
 interface DraftData {
   [key: number]: string;
@@ -40,6 +41,8 @@ const Home = () => {
   const [joined, setJoined] = useState(false);
   const [waiting, setWaiting] = useState(true);
   const [playerCode, setPlayerCode] = useState("");
+  const [isRoomNameHidden, setIsRoomNameHidden] = useState(false);
+  const [isCodeHidden, setIsCodeHidden] = useState(false);
   const [draftCode, setDraftCode] = useState<DraftData>({
     0: "",
     1: "",
@@ -135,6 +138,12 @@ const Home = () => {
       2: "",
       3: "",
     });
+  };
+  const toggleRoomNameVisibility = () => {
+    setIsRoomNameHidden(!isRoomNameHidden);
+  };
+  const toggleCodeVisibility = () => {
+    setIsCodeHidden(!isCodeHidden);
   };
 
   useEffect(() => {
@@ -321,9 +330,36 @@ const Home = () => {
     <div className="relative min-h-screen flex-col bg-background">
       <div className="h-screen flex-1 overflow-y-auto pb-[120px] sm:pb-32">
         <div className="container mx-auto max-w-2xl px-4 py-6 sm:py-8">
-          <h1 className="mb-6 text-center text-xl font-bold sm:text-2xl">
-            {t.room}: {roomName}
-          </h1>
+          <div className="mb-6 flex items-center justify-center space-x-4">
+            <h1 className="text-center text-xl font-bold sm:text-2xl">
+              {t.room}: {isRoomNameHidden ? "xxx-xxx" : roomName}
+            </h1>
+            {/* copiar código para o clipboard */}
+            <div className="flex space-x-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() =>
+                  navigator.clipboard.writeText(roomName.replace("-", ""))
+                }
+                type="button"
+              >
+                <CopyIcon className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleRoomNameVisibility}
+                type="button"
+              >
+                {isRoomNameHidden ? (
+                  <EyeIcon className="h-4 w-4" />
+                ) : (
+                  <EyeOffIcon className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
           <div className="space-y-6">
             {winner ? (
               <Winner
@@ -385,9 +421,23 @@ const Home = () => {
                   <h2 className="text-center text-lg font-semibold sm:text-xl">
                     {isMyTurn ? t.yourTurn : t.waitingForOpponent}
                   </h2>
-                  <p className="text-center text-sm text-muted-foreground">
-                    {t.codeConfirmation} <strong>{playerCode}</strong>
-                  </p>
+                  <div className="flex flex-row items-center justify-center space-x-4">
+                    <p className="text-sm text-muted-foreground">
+                      {t.codeConfirmation}{" "}
+                      <strong>{isCodeHidden ? "XXXX" : playerCode}</strong>{" "}
+                    </p>
+                    <Button
+                      variant="ghost"
+                      onClick={toggleCodeVisibility}
+                      type="button"
+                    >
+                      {isCodeHidden ? (
+                        <EyeIcon className="h-4 w-4" />
+                      ) : (
+                        <EyeOffIcon className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                   {isMyTurn && (
                     <div className="grid gap-2 sm:grid-cols-3 sm:items-center">
                       <p className="text-center text-base font-semibold sm:text-lg">
